@@ -1,8 +1,10 @@
 
-# remotes::install_github("JaseZiv/nblscrapeR")
-library(nblscrapeR)
+remotes::install_github("JaseZiv/nblscrapeR")
+#library(nblscrapeR)
 library(dplyr)
 library(purrr)
+# Load the jsonlite package
+library(jsonlite)
 
 current_season <- "2023-2024"
 
@@ -26,9 +28,13 @@ matches_df <- matches_df_existing %>%
   dplyr::bind_rows(matches_df_new) %>% 
   dplyr::arrange(matchTimeUTC)
 
+# Convert the R object to JSON format
+json_data <- toJSON(matches_df, pretty = TRUE)
+file_path <- "matches_df.json"
+write(json_data, file_path)
+
 
 nblscrapeR::save_nblr(matches_df, "matches_df", "league")
-
 
 venues <- matches_df %>% 
   dplyr:: select(venue) %>% tidyr::unnest(venue) %>% 
@@ -49,6 +55,9 @@ results <- matches_df %>%
   dplyr::select(matchId, season, venueName, roundNumber, matchNumber, matchStatus, matchName, matchType,
                 teamId, teamName, teamNickname, scoreString, isHomeCompetitor, atNeutralVenue, extraPeriodsUsed, matchTime, matchTimeUTC, attendance, duration)
 
+json_data <- toJSON(results, pretty = TRUE)
+file_path <- "results.json"
+write(json_data, file_path)
 # saveRDS(results, "results.rds")
 
 # temporarily, while the playoff schedules are dynamicaly being set as they progress, will need to 
@@ -96,8 +105,12 @@ results_long <- results_long %>%
 
 results_long <- janitor::clean_names(results_long)
 
-save_nblr(df=results_long, file_name = "results_long", release_tag = "match_results")
-
+json_data <- toJSON(results_long, pretty = TRUE)
+file_path <- "results_long.json"
+write(json_data, file_path)
+# save_nblr(df=results_long, file_name = "results_long", release_tag = "match_results")
+# print(results_long)
+# saveRDS(results_long, "results_long.rds")
 
 results_wide <- results %>% 
   dplyr::filter(isHomeCompetitor == 1) %>% 
@@ -119,10 +132,13 @@ results_wide <- results %>%
 
 results_wide <- janitor::clean_names(results_wide)
 
+json_data <- toJSON(results_wide, pretty = TRUE)
+file_path <- "results_wide.json"
+write(json_data, file_path)
 
-save_nblr(df=results_wide, file_name = "results_wide", release_tag = "match_results")
+# print(results_wide)
+# saveRDS(results_wide, "results_wide.rds")
+# save_nblr(df=results_wide, file_name = "results_wide", release_tag = "match_results")
 
 
 rm(list = ls())
-
-
