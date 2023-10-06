@@ -1,6 +1,5 @@
-
-remotes::install_github("JaseZiv/nblscrapeR")
-#library(nblscrapeR)
+#remotes::install_github("JaseZiv/nblscrapeR")
+library(nblscrapeR)
 library(dplyr)
 library(purrr)
 # Load the jsonlite package
@@ -33,8 +32,7 @@ json_data <- toJSON(matches_df, pretty = TRUE)
 file_path <- "matches_df.json"
 write(json_data, file_path)
 
-
-nblscrapeR::save_nblr(matches_df, "matches_df", "league")
+#nblscrapeR::save_nblr(matches_df, "matches_df", "league")
 
 venues <- matches_df %>% 
   dplyr:: select(venue) %>% tidyr::unnest(venue) %>% 

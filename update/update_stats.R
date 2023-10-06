@@ -1,6 +1,7 @@
 library(nblscrapeR)
 library(dplyr)
 library(purrr)
+library(jsonlite)
 
 # results_wide <- readRDS(url("https://github.com/JaseZiv/nblr_data/releases/download/match_results/results_wide.rds"))
 # results_wide <- results_wide %>% select(match_id, season)
@@ -29,8 +30,11 @@ pbp_df <- bind_rows(pbp_previous, pbp_df)
 
 # save if there has not been any issues with the data parsing/scraping
 if(nrow(pbp_df) >= nrow(pbp_all)) {
-  save_nblr(df=pbp_df, file_name = "pbp", release_tag = "pbp")
-  
+  #save_nblr(df=pbp_df, file_name = "pbp", release_tag = "pbp")
+  # write.csv2(pbp_df, file = "pbp.csv", row.names = TRUE, fileEncoding = "UTF-8")
+  json_data <- toJSON(pbp_df, pretty = TRUE)
+  file_path <- "pbp_df.json"
+  write(json_data, file_path)
 } else {
   print("Something has gone wrong with the parsing of play by play data")
 }
@@ -58,7 +62,11 @@ player <- bind_rows(player_previous, player)
 
 # save if there has not been any issues with the data parsing/scraping
 if(nrow(player) >= nrow(player_all)) {
-  save_nblr(df=player, file_name = "box_player", release_tag = "box_player")
+  # save_nblr(df=player, file_name = "box_player", release_tag = "box_player")
+  # write.csv2(player, file="box_player.csv")
+  json_data <- toJSON(player, pretty = TRUE)
+  file_path <- "box_player.json"
+  write(json_data, file_path)
   
 } else {
   print("Something has gone wrong with the parsing of player box data")
@@ -82,8 +90,11 @@ team_previous <- team_all %>% filter(season != current_season)
 team_box <- bind_rows(team_previous, team_box)
 
 if(nrow(team_box) >= nrow(team_all)) {
-  save_nblr(df=team_box, file_name = "box_team", release_tag = "box_team")
-  
+  # save_nblr(df=team_box, file_name = "box_team", release_tag = "box_team")
+  # write.csv2(team_box, file="box_player.csv")
+  json_data <- toJSON(team_box, pretty = TRUE)
+  file_path <- "team_box.json"
+  write(json_data, file_path)
 } else {
   print("Something has gone wrong with the parsing of team box data")
 }
@@ -108,8 +119,8 @@ shots_previous <- shots_all %>% filter(season != current_season)
 shots <- bind_rows(shots_previous, shots)
 
 if(nrow(shots) >= nrow(shots_all)) {
-  save_nblr(df=shots, file_name = "shots", release_tag = "shots")
-  
+  #save_nblr(df=shots, file_name = "shots", release_tag = "shots")
+  write.csv2(shots, file="shots.csv")
 } else {
   print("Something has gone wrong with the parsing of shots data")
 }
